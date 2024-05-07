@@ -1,0 +1,17 @@
+{
+  "frontendFolder": "/Users/alainafaisal/Downloads/flow-crm-tutorial/./frontend",
+  "themeFolder": "themes",
+  "themeResourceFolder": "/Users/alainafaisal/Downloads/flow-crm-tutorial/./frontend/generated/jar-resources",
+  "staticOutput": "/Users/alainafaisal/Downloads/flow-crm-tutorial/target/classes/META-INF/VAADIN/webapp/VAADIN/static",
+  "generatedFolder": "generated",
+  "statsOutput": "/Users/alainafaisal/Downloads/flow-crm-tutorial/target/classes/META-INF/VAADIN/config",
+  "frontendBundleOutput": "/Users/alainafaisal/Downloads/flow-crm-tutorial/target/classes/META-INF/VAADIN/webapp",
+  "devBundleOutput": "/Users/alainafaisal/Downloads/flow-crm-tutorial/target/dev-bundle/webapp",
+  "devBundleStatsOutput": "/Users/alainafaisal/Downloads/flow-crm-tutorial/target/dev-bundle/config",
+  "jarResourcesFolder": "/Users/alainafaisal/Downloads/flow-crm-tutorial/./frontend/generated/jar-resources",
+  "themeName": "flowcrmtutorial",
+  "clientServiceWorkerSource": "/Users/alainafaisal/Downloads/flow-crm-tutorial/target/sw.ts",
+  "pwaEnabled": false,
+  "offlineEnabled": false,
+  "offlinePath": "'offline.html'"
+}
