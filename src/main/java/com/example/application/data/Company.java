@@ -12,9 +12,9 @@ public class Company extends AbstractEntity {
     @NotBlank
     private String name;
 
-    @OneToMany(mappedBy = "company")
-    @Nullable
-    private List<Contact> employees = new LinkedList<>();
+    //@OneToMany(mappedBy = "company")
+//@Nullable
+   // private List<Contact> employees = new LinkedList<>();
 
     public String getName() {
         return name;
@@ -24,11 +24,11 @@ public class Company extends AbstractEntity {
         this.name = name;
     }
 
-    public List<Contact> getEmployees() {
-        return employees;
-    }
+  //  public List<Contact> getEmployees() {
+   //     return employees;
+  //  }
 
-    public void setEmployees(List<Contact> employees) {
-        this.employees = employees;
-    }
+   // public void setEmployees(List<Contact> employees) {
+     //   this.employees = employees;
+ //   }
 }
