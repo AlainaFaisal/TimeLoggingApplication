@@ -14,20 +14,18 @@ import java.time.LocalTime;
 @Entity
 public class TimeEntry extends AbstractEntity {
 
-    @NotEmpty
+
     private LocalDate date2;
 
-    @NotEmpty
     private LocalTime arrivalTime;
 
-    @NotEmpty
-    private String TimeCategory;
+    private String timeCategory;
 
-    @NotEmpty
     private LocalTime departureTime;
 
-    @NotEmpty
     private Duration breakDuration;
+
+    private Double hours;
 
     @ManyToOne
     @JoinColumn(name = "employee_id")
@@ -40,9 +38,9 @@ public class TimeEntry extends AbstractEntity {
     private Project project;
 
 
-    public String getTimeCategory() {return TimeCategory;}
+    public String getTimeCategory() {return timeCategory;}
 
-    public void setTimeCategory(String TimeCategory) {this.TimeCategory = TimeCategory;}
+    public void setTimeCategory(String timeCategory) {this.timeCategory = timeCategory;}
 
     public LocalTime getArrivalTime() {return arrivalTime;}
 
@@ -55,10 +53,12 @@ public class TimeEntry extends AbstractEntity {
     public Duration getBreakDuration() {return breakDuration;}
     public void setBreakDuration(Duration breakDuration) {this.breakDuration = breakDuration;}
 
-    public Double getHoursWorked() {
+    public Double getHours() {
         long minutesWorked = Duration.between(arrivalTime, departureTime).minus(breakDuration).toMinutes();
-        return minutesWorked / 60.0; // Convert minutes to hours
+        return hours = (minutesWorked / 60.0); // Convert minutes to hours
     }
+
+    public void setHours(Double hours) {this.hours = hours;}
 
 
     public LocalDate getDate() {

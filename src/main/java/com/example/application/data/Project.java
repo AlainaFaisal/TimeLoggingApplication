@@ -13,7 +13,7 @@ public class Project extends AbstractEntity {
     @NotBlank
     private String name;
 
-    @NotBlank
+
     private String description;
 //
 //    @OneToMany(mappedBy = "project")

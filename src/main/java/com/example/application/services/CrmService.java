@@ -21,7 +21,6 @@ public class CrmService {
     }
 
     public List<Employee> findAllEmployees() {
-//
         return employeeRepository.findAll();
     }
 
@@ -37,11 +36,11 @@ public class CrmService {
         return projectRepository.count();
     }
 
-    public void deleteContact(Project project) {
+    public void deleteProject(Project project) {
         projectRepository.delete(project);
     }
 
-    public void saveContact(Project project) {
+    public void saveProject(Project project) {
         if (project == null) {
             System.err.println("Contact is null. Are you sure you have connected your form to the application?");
             return;
@@ -49,8 +48,26 @@ public class CrmService {
         projectRepository.save(project);
     }
 
+    public void saveTimeEntry(TimeEntry timeEntry) {
+        if (timeEntry == null) {
+            System.err.println("Contact is null. Are you sure you have connected your form to the application?");
+            return;
+        }
+         timeRepository.save(timeEntry);
+    }
+
+    public void deleteTimeEntry(TimeEntry timeEntry) {
+         timeRepository.delete(timeEntry);
+    }
+
     public List<Project> findAllProjects() {
         return projectRepository.findAll();
+    }
+    public List<String> findAllDistinctTimeEntries() {
+        return timeRepository.findDistinctTime();
+    }
+    public List<TimeEntry> findAllTimeEntries() {
+        return timeRepository.findAll();
     }
 
 
