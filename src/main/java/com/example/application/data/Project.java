@@ -42,12 +42,5 @@ public class Project extends AbstractEntity {
     public void setDescription(String description) {
         this.description = description;
     }
-//
-//    public List<TimeEntry> timeEntries() {
-//        return timeEntries;
-//    }
-//
-//    public void setprojects(List<TimeEntry> timeEntries) {
-//        this.timeEntries = timeEntries;
-//    }
+
 }

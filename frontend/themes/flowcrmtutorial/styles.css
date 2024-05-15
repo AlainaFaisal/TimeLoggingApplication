@@ -1,4 +1,12 @@
-[theme~="small dark"] {
-  --lumo-primary-color: hsla(214, 90%, 52%, 0.1) ;
-  --lumo-font-family: '';
+html {
+  --lumo-font-family: Georgia;
 }
+
+vaadin-grid::part(header-cell){
+ --vaadin-grid-cell-background: grey;
+ color:white;
+}
+
+
+
+

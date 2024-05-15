@@ -26,7 +26,6 @@ import java.util.Collections;
 @PageTitle("Time Logging Application")
 public class ListView extends VerticalLayout {
     Grid<TimeEntry> grid = new Grid<>(TimeEntry.class);
-    TextField filterText = new TextField();
     ComboBox<Employee> name = new ComboBox<>("Employee");
     private Employee selectedEmployee;
     TimeForm form;
@@ -39,14 +38,19 @@ public class ListView extends VerticalLayout {
         setSizeFull();
         configureGrid();
         configureForm();
-        add(heading(), getToolbar(), getContent());
-       closeEditor();
+        add(heading(), getContent());
+        updateList();
     }
 
     private void closeEditor() {
         form.setTimeEntry(null);
         form.setVisible(false);
         removeClassName("editing");
+    }
+
+    private void openEditor() {
+        form.setVisible(true);
+        addClassName("editing");
     }
 
     private Component getContent() {
@@ -61,22 +65,30 @@ public class ListView extends VerticalLayout {
     private void configureForm() {
         form = new TimeForm(service.findAllProjects(), service.findAllEmployees(), service.findAllDistinctTimeEntries(), service.findAllTimeEntries());
         form.setWidth("25em");
+        form.getEmployeeComboBox().addValueChangeListener(event -> {
+            selectedEmployee = event.getValue();
+            if (selectedEmployee != null) {
+                updateListWithName(selectedEmployee.getName());
+            } else {
+                grid.setItems();
+            }
+        });
         form.addSaveListener(this::saveTimeEntry);
         form.addDeleteListener(this::deleteTimeEntry);
-        form.addCloseListener(e -> closeEditor());
-
     }
 
     private void saveTimeEntry(TimeForm.SaveEvent event) {
         service.saveTimeEntry(event.getTimeEntry());
-        selectedEmployee = name.getValue();
-        System.out.println(selectedEmployee);
-        updateListWithName(selectedEmployee.getName());
+        Employee selected = form.getEmployeeComboBox().getValue();
+        updateListWithName(selected.getName());
+        openEditor();
     }
 
     private void deleteTimeEntry(TimeForm.DeleteEvent event) {
         service.deleteTimeEntry(event.getTimeEntry());
-        updateList();
+      //  selectedEmployee = name.getValue();
+        updateListWithName(selectedEmployee.getName());
+        openEditor();
     }
 
     private void updateListWithName(String employeeName) {
@@ -89,12 +101,14 @@ public class ListView extends VerticalLayout {
 
     private Component heading() {
         var topbar = new HorizontalLayout(new H1("Vaadin"));
+        topbar.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        topbar.setPadding(true);
         topbar.addClassName("topbar");
         return topbar;
     }
 
     private void configureGrid() {
-        grid.addClassNames("contact-grid");
+        grid.addClassNames("timeEntry-grid");
         grid.setSizeFull();
         grid.setColumns("date");
         grid.addColumn(timeentry -> String.format("%.2f hours", timeentry.getHours())).setHeader("Hours Worked");
@@ -118,13 +132,13 @@ public class ListView extends VerticalLayout {
         Button selectButton = new Button("Select");
         selectButton.addThemeVariants(ButtonVariant.LUMO_ICON);
         selectButton.addClickListener(event -> {
-            selectedEmployee = name.getValue();
-            if (selectedEmployee != null) {
-                updateListWithName(selectedEmployee.getName());
-            } else {
-                Notification.show("Please select an employee from the list.", 3000, Notification.Position.MIDDLE);
-            }
-            addEntry();
+//            selectedEmployee = name.getValue();
+//            if (selectedEmployee != null) {
+//                updateListWithName(selectedEmployee.getName());
+//            } else {
+//                Notification.show("Please select an employee from the list.", 3000, Notification.Position.MIDDLE);
+//            }
+//            addEntry();
         });
 
         var toolbar = new HorizontalLayout(name, selectButton);
@@ -135,13 +149,9 @@ public class ListView extends VerticalLayout {
         return toolbar;
     }
     public void editEntry(TimeEntry value) {
-        if (value == null) {
-            closeEditor();
-        } else {
             form.setTimeEntry(value);
             form.setVisible(true);
             addClassName("editing");
-        }
     }
 
     private void addEntry() {

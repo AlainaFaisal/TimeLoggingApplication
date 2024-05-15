@@ -7,6 +7,9 @@ import com.example.application.data.Project;
 import com.example.application.data.TimeEntry;
 import com.example.application.services.CrmService;
 import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.HasValue.ValueChangeEvent;
+import com.vaadin.flow.component.HasValue;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -23,6 +26,7 @@ import com.vaadin.flow.shared.Registration;
 
 
 import java.time.Duration;
+import java.time.LocalTime;
 import java.util.List;
 
 
@@ -43,13 +47,18 @@ public class TimeForm extends FormLayout {
     Button close = new Button("Close");
     Button save = new Button("Save");
     Button delete = new Button("Delete");
-
+    private String selectedEmployeeName;
 
     public TimeForm(List<Project> projects, List<Employee> employees, List<String> timeCategories, List<TimeEntry> timeEntries) {
         addClassName("time-form");
         binder.bindInstanceFields(this);
         binder.forField(date2)
                 .bind(TimeEntry::getDate, TimeEntry::setDate);
+//        binder.forField(project)
+//                .bind(TimeEntry::getProject, TimeEntry::setProject);
+//
+//        binder.forField(employee)
+//                .bind(TimeEntry::getEmployee, TimeEntry::setEmployee);
 
         binder.forField(description)
                 .bind(timeEntry -> timeEntry.getProject() != null ? timeEntry.getProject().getDescription() : "",
@@ -59,11 +68,31 @@ public class TimeForm extends FormLayout {
                             }
                         });
 
+
+        binder.forField(arrivalTime)
+                .bind(TimeEntry::getArrivalTime, TimeEntry::setArrivalTime);
+
+        binder.forField(departureTime)
+                .bind(TimeEntry::getDepartureTime, TimeEntry::setDepartureTime);
+
+        binder.forField(breakDuration)
+                .asRequired("Break duration is required")
+                .bind(TimeEntry::getBreakDuration, TimeEntry::setBreakDuration);
+        binder.bind(hours, timeEntry -> {
+            if (timeEntry.getArrivalTime() != null && timeEntry.getDepartureTime() != null && timeEntry.getBreakDuration() != null) {
+                long minutesWorked = Duration.between(timeEntry.getArrivalTime(), timeEntry.getDepartureTime()).minus(timeEntry.getBreakDuration()).toMinutes();
+                double hoursWorked = minutesWorked / 60.0;
+                hoursWorked = Math.round(hoursWorked * 100.0) / 100.0;
+                return String.format("%.2f", hoursWorked);
+            }
+            return "0.00"; // Default
+        }, null);
+
         employee.setItems(employees);
         employee.setItemLabelGenerator(Employee::getName);
         project.setItems(projects);
         project.setItemLabelGenerator(Project::getName);
-        employee.addValueChangeListener(this::handleEmployeeSelectionChange);
+        //employee.addValueChangeListener(this::handleEmployeeSelectionChange);
         timeCategory.setItems(timeCategories);
         breakDuration.setItems(Duration.ofMinutes(15), Duration.ofMinutes(30), Duration.ofMinutes(45),  Duration.ofMinutes(60));
         breakDuration.setItemLabelGenerator(duration -> String.format("%d minutes", duration.toMinutes()));
@@ -71,32 +100,25 @@ public class TimeForm extends FormLayout {
         add(createBoxlayout2(), createBoxlayout(), createButtonsLayout());
     }
 
+    private void handleEmployeeSelectionChange(ValueChangeEvent<Employee> event) {
+        Employee selectedEmployee = event.getValue();
+        if (selectedEmployee != null) {
+            selectedEmployeeName = selectedEmployee.getName();
+        } else {
+            selectedEmployeeName = null;
+        }
+    }
+    public ComboBox<Employee> getEmployeeComboBox() {
+        return employee;
+    }
+
+    public String getSelectedEmployeeName() {
+        return selectedEmployeeName;
+    }
+
+
     public void setTimeEntry(TimeEntry timeEntry){
         binder.setBean(timeEntry);
-    }
-
-    private void handleEmployeeSelectionChange(HasValue.ValueChangeEvent<Employee> event) {
-        Employee selectedEmployee = event.getValue();
-        timeEntry.setEmployee(selectedEmployee);
-        binder.readBean(timeEntry);
-        fireEvent(new CustomValueChangeEvent(this, selectedEmployee != null ? selectedEmployee.getName() : null));
-    }
-
-    public static class CustomValueChangeEvent extends ComponentEvent<TimeForm> {
-        private final String employeeName;
-
-        public CustomValueChangeEvent(TimeForm source, String employeeName) {
-            super(source, false);
-            this.employeeName = employeeName;
-        }
-
-        public String getEmployeeName() {
-            return employeeName;
-        }
-    }
-
-    public Registration addCustomValueChangeListener(ComponentEventListener<CustomValueChangeEvent> listener) {
-        return addListener(CustomValueChangeEvent.class, listener);
     }
 
 
@@ -126,10 +148,6 @@ public class TimeForm extends FormLayout {
         if(binder.isValid()) {
             fireEvent(new SaveEvent(this, binder.getBean()));
         }
-//            TimeEntry timeEntry = binder.getBean();
-//            String employeeName = timeEntry.getEmployee().getName();
-//            Notification.show("Time Entry saved successfully");
-//            fireEvent(new SaveEvent(this, timeEntry, employeeName));
     }
 
 

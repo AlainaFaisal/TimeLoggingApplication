@@ -50,7 +50,7 @@ public class CrmService {
 
     public void saveTimeEntry(TimeEntry timeEntry) {
         if (timeEntry == null) {
-            System.err.println("Contact is null. Are you sure you have connected your form to the application?");
+            System.err.println("TimeEntry is null. Are you sure you have connected your form to the application?");
             return;
         }
          timeRepository.save(timeEntry);

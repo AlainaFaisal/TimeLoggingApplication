@@ -1,6 +1,7 @@
 package com.example.application.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -27,12 +28,12 @@ public class TimeEntry extends AbstractEntity {
 
     private Double hours;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "employee_id")
     @NotNull
     private Employee employee;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "project_id")
     @NotNull
     private Project project;
@@ -55,7 +56,7 @@ public class TimeEntry extends AbstractEntity {
 
     public Double getHours() {
         long minutesWorked = Duration.between(arrivalTime, departureTime).minus(breakDuration).toMinutes();
-        return hours = (minutesWorked / 60.0); // Convert minutes to hours
+        return hours = (minutesWorked / 60.0);
     }
 
     public void setHours(Double hours) {this.hours = hours;}
