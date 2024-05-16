@@ -13,6 +13,7 @@ import java.util.List;
 public class Employee extends AbstractEntity {
 
 
+    @NotBlank
     private String name;
 
 //    @OneToMany(mappedBy = "employee")
@@ -24,5 +25,6 @@ public class Employee extends AbstractEntity {
     public void setName(String name) {
         this.name = name;
     }
+
 
 }

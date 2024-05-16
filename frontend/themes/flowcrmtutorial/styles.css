@@ -3,13 +3,51 @@ html {
 }
 
 vaadin-grid::part(header-cell){
- --vaadin-grid-cell-background: grey;
-  color:white;
+ --vaadin-grid-cell-background: #bfc2c7;
+  color:black;
 }
 
-
-
 .topbar {
- --lumo-primary-text-color: red;
-text-align: center;
+  width: 100%;
+  background: linear-gradient(90deg, rgba(59,129,255,1) 0%, rgba(110,92,255,1) 100%);
+}
+
+.topbar h1 {
+    margin: 0;
+    color: white;
+}
+
+.list-view{
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.content{
+    padding-left: 70px;
+    padding-right: 70px;
+    box-sizing: border-box;
+    width: calc(100% - 20px);
+}
+
+vaadin-combo-box.employee-combobox {
+    --vaadin-input-field-border-radius: 20px;
+     --vaadin-input-field-height:40px;
+}
+
+.arrival-field, .departure-field, .break-field, .date-picker {
+    --vaadin-input-field-border-radius: 20px;
+     --vaadin-input-field-height:40px;
+}
+
+.h4-no-margin {
+    margin: 0;
+    padding-right:50px;
+}
+
+vaadin-text-field.description-box{
+    --vaadin-input-field-width:900px;
+    --vaadin-input-field-background
 }

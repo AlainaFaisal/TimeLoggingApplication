@@ -20,7 +20,6 @@ public class Project extends AbstractEntity {
 //    private List<TimeEntry> timeEntries = new ArrayList<>();
 
     public Project() {
-
     }
     public Project(String name) {
         this.name = name;

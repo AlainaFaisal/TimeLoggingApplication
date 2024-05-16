@@ -27,7 +27,8 @@ import java.util.Collections;
 public class ListView extends VerticalLayout {
     Grid<TimeEntry> grid = new Grid<>(TimeEntry.class);
     ComboBox<Employee> name = new ComboBox<>("Employee");
-    private Employee selectedEmployee;
+    Employee selectedEmployee= new Employee();
+    private boolean isEditing = false;
     TimeForm form;
     CrmService service;
 
@@ -64,11 +65,11 @@ public class ListView extends VerticalLayout {
 
     private void configureForm() {
         form = new TimeForm(service.findAllProjects(), service.findAllEmployees(), service.findAllDistinctTimeEntries(), service.findAllTimeEntries());
-        form.setWidth("25em");
+       form.setWidth("15em");
+        //form.setColspan(1, );
         form.getEmployeeComboBox().addValueChangeListener(event -> {
             selectedEmployee = event.getValue();
             if (selectedEmployee != null) {
-                form.clearForm();
                 updateListWithName(selectedEmployee.getName());
             } else {
                 grid.setItems();
@@ -76,16 +77,19 @@ public class ListView extends VerticalLayout {
         });
         form.addSaveListener(this::saveTimeEntry);
         form.addDeleteListener(this::deleteTimeEntry);
-        form.addCreateNewListener(this::createNewTimeEntry);
+        form.addClearListener(this::clearTimeEntry);
+        form.addCreateNewListener(this::createNewEntry);
     }
 
-    private void createNewTimeEntry(TimeForm.CreateNewEvent event) {
-        TimeEntry newEntry = event.getTimeEntry();
-        service.createTimeEntry(newEntry.getDate(), newEntry.getArrivalTime(), newEntry.getDepartureTime(),
-                newEntry.getBreakDuration(), newEntry.getHours(), newEntry.getTimeCategory(),
-                newEntry.getEmployee().getName(), newEntry.getProject().getName());
-        updateList();
-        Notification.show("New Time Entry Created", 3000, Notification.Position.MIDDLE);
+    private void createNewEntry(TimeForm.CreateNewEvent event) {
+        service.saveTimeEntry(event.getTimeEntry());
+        Employee selected = form.getEmployeeComboBox().getValue();
+        updateListWithName(selected.getName());
+    }
+
+    private void clearTimeEntry(TimeForm.ClearEvent clearEvent) {
+        form.clearForm();
+
     }
 
 
@@ -98,8 +102,8 @@ public class ListView extends VerticalLayout {
 
     private void deleteTimeEntry(TimeForm.DeleteEvent event) {
         service.deleteTimeEntry(event.getTimeEntry());
-      //  selectedEmployee = name.getValue();
-        updateListWithName(selectedEmployee.getName());
+        Employee selected = form.getEmployeeComboBox().getValue();
+        updateListWithName(selected.getName());
         openEditor();
     }
 
@@ -114,8 +118,9 @@ public class ListView extends VerticalLayout {
     private Component heading() {
         HorizontalLayout topbar = new HorizontalLayout(new H1("Vaadin"));
         topbar.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-        topbar.setAlignItems(FlexComponent.Alignment.CENTER);
+        topbar.setDefaultVerticalComponentAlignment(Alignment.CENTER);
         topbar.setPadding(true);
+        topbar.setWidthFull();
         topbar.addClassName("topbar");
         return topbar;
     }
@@ -130,9 +135,12 @@ public class ListView extends VerticalLayout {
         grid.addColumn(TimeEntry::getTimeCategory).setHeader("Time Category");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
-        grid.asSingleSelect().addValueChangeListener(event ->
-                editEntry(event.getValue()));
-
+        grid.asSingleSelect().addValueChangeListener(event -> {
+            if (!isEditing) {
+                editEntry(event.getValue());
+            }
+            isEditing = false;
+        });
     }
 
 
@@ -163,6 +171,7 @@ public class ListView extends VerticalLayout {
         return toolbar;
     }
     public void editEntry(TimeEntry value) {
+            isEditing = true;
             form.setTimeEntry(value);
             form.setVisible(true);
             addClassName("editing");

@@ -27,6 +27,7 @@ public class TimeEntry extends AbstractEntity {
 
     private Double hours;
 
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "employee_id")
     @NotNull
