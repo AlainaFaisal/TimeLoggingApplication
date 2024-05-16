@@ -68,6 +68,7 @@ public class ListView extends VerticalLayout {
         form.getEmployeeComboBox().addValueChangeListener(event -> {
             selectedEmployee = event.getValue();
             if (selectedEmployee != null) {
+                form.clearForm();
                 updateListWithName(selectedEmployee.getName());
             } else {
                 grid.setItems();
@@ -75,7 +76,18 @@ public class ListView extends VerticalLayout {
         });
         form.addSaveListener(this::saveTimeEntry);
         form.addDeleteListener(this::deleteTimeEntry);
+        form.addCreateNewListener(this::createNewTimeEntry);
     }
+
+    private void createNewTimeEntry(TimeForm.CreateNewEvent event) {
+        TimeEntry newEntry = event.getTimeEntry();
+        service.createTimeEntry(newEntry.getDate(), newEntry.getArrivalTime(), newEntry.getDepartureTime(),
+                newEntry.getBreakDuration(), newEntry.getHours(), newEntry.getTimeCategory(),
+                newEntry.getEmployee().getName(), newEntry.getProject().getName());
+        updateList();
+        Notification.show("New Time Entry Created", 3000, Notification.Position.MIDDLE);
+    }
+
 
     private void saveTimeEntry(TimeForm.SaveEvent event) {
         service.saveTimeEntry(event.getTimeEntry());
@@ -100,8 +112,9 @@ public class ListView extends VerticalLayout {
     }
 
     private Component heading() {
-        var topbar = new HorizontalLayout(new H1("Vaadin"));
+        HorizontalLayout topbar = new HorizontalLayout(new H1("Vaadin"));
         topbar.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        topbar.setAlignItems(FlexComponent.Alignment.CENTER);
         topbar.setPadding(true);
         topbar.addClassName("topbar");
         return topbar;
@@ -119,6 +132,7 @@ public class ListView extends VerticalLayout {
 
         grid.asSingleSelect().addValueChangeListener(event ->
                 editEntry(event.getValue()));
+
     }
 
 

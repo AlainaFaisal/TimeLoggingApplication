@@ -1,20 +1,19 @@
 package com.example.application.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Entity
 public class TimeEntry extends AbstractEntity {
-
 
     private LocalDate date2;
 
@@ -81,4 +80,53 @@ public class TimeEntry extends AbstractEntity {
     public void setProject(Project project) {
         this.project = project;
     }
+
+//
+//    @Transactional
+//    public TimeEntry createTimeEntry(LocalDate date, LocalTime arrivalTime, LocalTime departureTime,
+//                                     Duration breakDuration, Double hours, String timeCategory,
+//                                     String employeeName, String projectName) {
+//        TimeEntry timeEntry = new TimeEntry();
+//        timeEntry.setDate(date);
+//        timeEntry.setArrivalTime(arrivalTime);
+//        timeEntry.setDepartureTime(departureTime);
+//        timeEntry.setBreakDuration(breakDuration);
+//        timeEntry.setHours(hours);
+//        timeEntry.setTimeCategory(timeCategory);
+//
+//        Employee employee = findOrCreateEmployee(employeeName);
+//        Project project = findOrCreateProject(projectName);
+//
+//        timeEntry.setEmployee(employee);
+//        timeEntry.setProject(project);
+//
+//        entityManager.persist(timeEntry);
+//        return timeEntry;
+//    }
+//
+//    private Employee findOrCreateEmployee(String name) {
+//        List<Employee> employees = entityManager.createQuery("SELECT e FROM Employee e WHERE e.name = :name", Employee.class)
+//                .setParameter("name", name)
+//                .getResultList();
+//        if (employees.isEmpty()) {
+//            Employee newEmployee = new Employee();
+//            newEmployee.setName(name);
+//            entityManager.persist(newEmployee);
+//            return newEmployee;
+//        }
+//        return employees.get(0);
+//    }
+//
+//    private Project findOrCreateProject(String name) {
+//        List<Project> projects = entityManager.createQuery("SELECT p FROM Project p WHERE p.name = :name", Project.class)
+//                .setParameter("name", name)
+//                .getResultList();
+//        if (projects.isEmpty()) {
+//            Project newProject = new Project();
+//            newProject.setName(name);
+//            entityManager.persist(newProject);
+//            return newProject;
+//        }
+//        return projects.get(0);
+//    }
 }

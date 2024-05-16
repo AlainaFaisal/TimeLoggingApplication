@@ -25,11 +25,4 @@ public class Employee extends AbstractEntity {
         this.name = name;
     }
 
-//    public List<TimeEntry> timeEntries() {
-//        return timeEntries;
-//    }
-//
-//    public void setTimeEntries(List<TimeEntry> timeEntries) {
-//        this.timeEntries = timeEntries;
-//    }
 }

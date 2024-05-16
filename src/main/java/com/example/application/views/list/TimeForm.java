@@ -31,6 +31,7 @@ import java.util.List;
 
 
 public class TimeForm extends FormLayout {
+    CrmService service;
     private TimeEntry timeEntry;
     Binder<TimeEntry> binder= new BeanValidationBinder<>(TimeEntry.class);
 
@@ -45,8 +46,9 @@ public class TimeForm extends FormLayout {
     ComboBox<Duration> breakDuration = new ComboBox<>("Break Duration");
 
     Button close = new Button("Close");
-    Button save = new Button("Save");
+    Button save = new Button("Update");
     Button delete = new Button("Delete");
+    Button createNew = new Button("Create New");
     private String selectedEmployeeName;
 
     public TimeForm(List<Project> projects, List<Employee> employees, List<String> timeCategories, List<TimeEntry> timeEntries) {
@@ -100,6 +102,19 @@ public class TimeForm extends FormLayout {
         add(createBoxlayout2(), createBoxlayout(), createButtonsLayout());
     }
 
+    public void clearForm(){
+        project.clear();
+        description.clear();
+        hours.clear();
+        date2.clear();
+        arrivalTime.clear();
+        departureTime.clear();
+        timeCategory.clear();
+        breakDuration.setValue(Duration.ZERO);
+
+        hours.setValue("0.00");
+    }
+
     private void handleEmployeeSelectionChange(ValueChangeEvent<Employee> event) {
         Employee selectedEmployee = event.getValue();
         if (selectedEmployee != null) {
@@ -132,16 +147,39 @@ public class TimeForm extends FormLayout {
 
     private HorizontalLayout createButtonsLayout() {
         close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        save.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        createNew.addThemeVariants(ButtonVariant.LUMO_PRIMARY); // Styling the new button
+
 
         save.addClickListener(event -> validateAndSave());
         delete.addClickListener(event -> fireEvent(new DeleteEvent(this, binder.getBean())));
         close.addClickListener(event -> fireEvent(new CloseEvent(this)));
+        createNew.addClickListener(event -> newTimeEntry()); // Create a new TimeEntry
 
         save.addClickShortcut(Key.ENTER);
         binder.addStatusChangeListener(e -> save.setEnabled(binder.isValid()));
-        return new HorizontalLayout(save, delete, close);
+        return new HorizontalLayout(createNew, save, close);
+    }
+
+    private void newTimeEntry() {
+        TimeEntry newEntry = new TimeEntry();
+        if(binder.isValid()) {
+            fireEvent(new CreateNewEvent(this, binder.getBean()));
+        }
+//        TimeEntry newEntry = service.createTimeEntry(
+//                date2.getValue(),
+//                arrivalTime.getValue(),
+//                departureTime.getValue(),
+//                Duration.ofMinutes(Long.parseLong(String.valueOf(breakDuration.getValue()))),
+//                Double.parseDouble(hours.getValue()),
+//                timeCategory.getValue(),
+//                employee.getValue().getName(),
+//                project.getValue().getName()
+//        );
+//        if (newEntry != null) {
+//            Notification.show("Entry saved successfully!");
+//        }
     }
 
     private void validateAndSave() {
@@ -182,6 +220,11 @@ public class TimeForm extends FormLayout {
             super(source, null);
         }
     }
+    public static class CreateNewEvent extends TimeFormEvent {
+        CreateNewEvent(TimeForm source, TimeEntry timeEntry) {
+            super(source, timeEntry);
+        }
+    }
 
     public Registration addDeleteListener(ComponentEventListener<DeleteEvent> listener) {
         return addListener(DeleteEvent.class, listener);
@@ -192,5 +235,9 @@ public class TimeForm extends FormLayout {
     }
     public Registration addCloseListener(ComponentEventListener<CloseEvent> listener) {
         return addListener(CloseEvent.class, listener);
+    }
+
+    public Registration addCreateNewListener(ComponentEventListener<CreateNewEvent> listener) {
+        return addListener(CreateNewEvent.class, listener);
     }
 }

@@ -4,9 +4,12 @@ html {
 
 vaadin-grid::part(header-cell){
  --vaadin-grid-cell-background: grey;
- color:white;
+  color:white;
 }
 
 
 
-
+.topbar {
+ --lumo-primary-text-color: red;
+text-align: center;
+}

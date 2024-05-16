@@ -10,7 +10,6 @@ import java.util.List;
 
 @Entity
 public class Project extends AbstractEntity {
-    @NotBlank
     private String name;
 
 

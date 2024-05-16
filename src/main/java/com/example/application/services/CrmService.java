@@ -3,6 +3,9 @@ package com.example.application.services;
 import com.example.application.data.*;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -70,5 +73,41 @@ public class CrmService {
         return timeRepository.findAll();
     }
 
+    public TimeEntry createTimeEntry(LocalDate date, LocalTime arrivalTime, LocalTime departureTime,
+                                     Duration breakDuration, Double hours, String timeCategory,
+                                     String employeeName, String projectName) {
+        Employee employee = findOrCreateEmployee(employeeName);
+        Project project = findOrCreateProject(projectName);
+
+        TimeEntry timeEntry2 = new TimeEntry();
+        timeEntry2.setDate(date);
+        timeEntry2.setArrivalTime(arrivalTime);
+        timeEntry2.setDepartureTime(departureTime);
+        timeEntry2.setBreakDuration(breakDuration);
+        timeEntry2.setHours(hours);
+        timeEntry2.setTimeCategory(timeCategory);
+        timeEntry2.setEmployee(employee);
+        timeEntry2.setProject(project);
+
+        return timeRepository.save(timeEntry2);
+    }
+
+    private Employee findOrCreateEmployee(String name) {
+        return employeeRepository.findByName(name)
+                .orElseGet(() -> {
+                    Employee newEmployee = new Employee();
+                    newEmployee.setName(name);
+                    return employeeRepository.save(newEmployee);
+                });
+    }
+
+    private Project findOrCreateProject(String name) {
+        return projectRepository.findByName(name)
+                .orElseGet(() -> {
+                    Project newProject = new Project();
+                    newProject.setName(name);
+                    return projectRepository.save(newProject);
+                });
+    }
 
 }
