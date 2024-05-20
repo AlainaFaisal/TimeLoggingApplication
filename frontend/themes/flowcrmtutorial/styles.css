@@ -1,20 +1,30 @@
 html {
-  --lumo-font-family: Georgia;
+  --lumo-font-family: Arial;
 }
 
 vaadin-grid::part(header-cell){
  --vaadin-grid-cell-background: #bfc2c7;
   color:black;
+  font-size:16px;
+
+
 }
 
 .topbar {
   width: 100%;
-  background: linear-gradient(90deg, rgba(59,129,255,1) 0%, rgba(110,92,255,1) 100%);
+  background: linear-gradient(90deg, rgba(0, 99, 255, 0.8) 0%, rgba(150,62,255,1) 100%);
+  color:white
 }
 
 .topbar h1 {
     margin: 0;
     color: white;
+    text-align:center;
+}
+
+.topbar h4{
+text-align:right;
+color:white
 }
 
 .list-view{
@@ -32,22 +42,13 @@ vaadin-grid::part(header-cell){
     width: calc(100% - 20px);
 }
 
-vaadin-combo-box.employee-combobox {
+
+.arrival-field, .departure-field, .break-field, .date-picker, .employee-combobox{
     --vaadin-input-field-border-radius: 20px;
-     --vaadin-input-field-height:40px;
+     --vaadin-input-field-height:35px;
 }
 
-.arrival-field, .departure-field, .break-field, .date-picker {
-    --vaadin-input-field-border-radius: 20px;
-     --vaadin-input-field-height:40px;
+vaadin-button{
+padding-top:10px;
 }
 
-.h4-no-margin {
-    margin: 0;
-    padding-right:50px;
-}
-
-vaadin-text-field.description-box{
-    --vaadin-input-field-width:900px;
-    --vaadin-input-field-background
-}

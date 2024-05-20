@@ -13,7 +13,6 @@ public class Project extends AbstractEntity {
     private String name;
 
 
-    private String description;
 //
 //    @OneToMany(mappedBy = "project")
 //    @Nullable
@@ -33,12 +32,5 @@ public class Project extends AbstractEntity {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
 }

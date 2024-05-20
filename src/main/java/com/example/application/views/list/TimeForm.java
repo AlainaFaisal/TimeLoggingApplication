@@ -19,9 +19,11 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.html.H6;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -64,34 +66,34 @@ public class TimeForm extends FormLayout {
 
         binder.forField(date2)
                 .bind(TimeEntry::getDate, TimeEntry::setDate);
-
-        binder.forField(description)
-                .bind(timeEntry -> timeEntry.getProject() != null ? timeEntry.getProject().getDescription() : "",
-                        (timeEntry, desc) -> {
-                            if (timeEntry.getProject() != null) {
-                                timeEntry.getProject().setDescription(desc);
-                            }
-                        });
-
-
-        binder.forField(arrivalTime)
-                .bind(TimeEntry::getArrivalTime, TimeEntry::setArrivalTime);
-
-        binder.forField(departureTime)
-                .bind(TimeEntry::getDepartureTime, TimeEntry::setDepartureTime);
-
-        binder.forField(breakDuration)
-                .asRequired("Break duration is required")
-                .bind(TimeEntry::getBreakDuration, TimeEntry::setBreakDuration);
-        binder.bind(hours, timeEntry -> {
-            if (timeEntry.getArrivalTime() != null && timeEntry.getDepartureTime() != null && timeEntry.getBreakDuration() != null) {
-                long minutesWorked = Duration.between(timeEntry.getArrivalTime(), timeEntry.getDepartureTime()).minus(timeEntry.getBreakDuration()).toMinutes();
-                double hoursWorked = minutesWorked / 60.0;
-                hoursWorked = Math.round(hoursWorked * 100.0) / 100.0;
-                return String.format("%.2f", hoursWorked);
-            }
-            return "0.00"; // Default
-        }, null);
+//
+//        binder.forField(description)
+//                .bind(timeEntry -> timeEntry.getProject() != null ? timeEntry.getProject().getDescription() : "",
+//                        (timeEntry, desc) -> {
+//                            if (timeEntry.getProject() != null) {
+//                                timeEntry.getProject().setDescription(desc);
+//                            }
+//                        });
+//
+//
+//        binder.forField(arrivalTime)
+//                .bind(TimeEntry::getArrivalTime, TimeEntry::setArrivalTime);
+//
+//        binder.forField(departureTime)
+//                .bind(TimeEntry::getDepartureTime, TimeEntry::setDepartureTime);
+//
+//        binder.forField(breakDuration)
+//                .asRequired("Break duration is required")
+//                .bind(TimeEntry::getBreakDuration, TimeEntry::setBreakDuration);
+//        binder.bind(hours, timeEntry -> {
+//            if (timeEntry.getArrivalTime() != null && timeEntry.getDepartureTime() != null && timeEntry.getBreakDuration() != null) {
+//                long minutesWorked = Duration.between(timeEntry.getArrivalTime(), timeEntry.getDepartureTime()).minus(timeEntry.getBreakDuration()).toMinutes();
+//                double hoursWorked = minutesWorked / 60.0;
+//                hoursWorked = Math.round(hoursWorked * 100.0) / 100.0;
+//                return String.format("%.2f", hoursWorked);
+//            }
+//            return "0.00"; // Default
+//        }, null);
 
         employee.setItems(employees);
         employee.setItemLabelGenerator(Employee::getName);
@@ -108,8 +110,14 @@ public class TimeForm extends FormLayout {
         breakDuration.setItems(Duration.ofMinutes(15), Duration.ofMinutes(30), Duration.ofMinutes(45),  Duration.ofMinutes(60));
         breakDuration.setItemLabelGenerator(duration -> String.format("%d minutes", duration.toMinutes()));
 
+        VerticalLayout mainLayout = new VerticalLayout();
+        mainLayout.setPadding(false);
+        mainLayout.setMargin(false);
+        mainLayout.setSpacing(false);
+        mainLayout.setWidthFull();
+
         add(createBoxlayout2(), createBoxlayout(), createButtonsLayout());
-        setTimeEntry(new TimeEntry());
+      // setTimeEntry(new TimeEntry());
     }
 
     public void clearForm(){
@@ -147,31 +155,40 @@ public class TimeForm extends FormLayout {
     }
 
 
-    private Component createBoxlayout2() {
+    private HorizontalLayout createBoxlayout2() {
         H4 addHours = new H4("Add Hours");
         addHours.addClassName("h4-no-margin");
-
         HorizontalLayout first = new HorizontalLayout();
-        first.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
-        first.setAlignItems(FlexComponent.Alignment.STRETCH);
-        first.add(employee, date2, arrivalTime, breakDuration, departureTime);
+//       first.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+//      first.setAlignItems(FlexComponent.Alignment.STRETCH);
+       add(employee, date2, arrivalTime, breakDuration, departureTime);
+       employee.setPrefixComponent(new Icon("vaadin", "user"));
+       // setColspan(employee, 2);
+
+        //  first.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+
+        first.setFlexGrow(1, employee);
+        first.setFlexGrow(3, date2);
+        first.setFlexGrow(1, arrivalTime);
+        first.setFlexGrow(1, breakDuration);
+        first.setFlexGrow(1, departureTime);
         first.setWidthFull();
-        first.setSpacing(true);
 
         return first;
     }
     private HorizontalLayout createBoxlayout() {
-        HorizontalLayout second= new HorizontalLayout(project, description, hours, timeCategory);
-        second.setFlexGrow(1, project);
-        second.setFlexGrow(0.5, hours);
-        second.setFlexGrow(9, timeCategory);
-        second.setWidthFull();
+        HorizontalLayout second= new HorizontalLayout();
+        add(project, description, hours, timeCategory);
+
+        second.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+        setColspan( description, 2);
 
         return second;
     }
 
 
     private HorizontalLayout createButtonsLayout() {
+        HorizontalLayout buttons= new HorizontalLayout();
         close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         clear.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
@@ -187,7 +204,9 @@ public class TimeForm extends FormLayout {
 
         save.addClickShortcut(Key.ENTER);
         binder.addStatusChangeListener(e -> save.setEnabled(binder.isValid()));
-        return new HorizontalLayout(createNew, save, clear, close);
+        buttons.add(createNew, save, clear, close);
+     //   buttons.setAlignItems(FlexComponent.Alignment.);
+        return buttons;
     }
 
     private void newTimeEntry() {

@@ -26,6 +26,8 @@ public class TimeEntry extends AbstractEntity {
     private Duration breakDuration;
 
     private Double hours;
+    private String description;
+
 
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -61,7 +63,6 @@ public class TimeEntry extends AbstractEntity {
 
     public void setHours(Double hours) {this.hours = hours;}
 
-
     public LocalDate getDate() {
         return date2;
     }
@@ -81,6 +82,15 @@ public class TimeEntry extends AbstractEntity {
     public void setProject(Project project) {
         this.project = project;
     }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
 
 //
 //    @Transactional

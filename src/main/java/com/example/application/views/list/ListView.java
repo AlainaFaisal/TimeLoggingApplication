@@ -9,8 +9,10 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -39,6 +41,7 @@ public class ListView extends VerticalLayout {
         setSizeFull();
         configureGrid();
         configureForm();
+        //form.setWidthFull();
         add(heading(), getContent());
         updateList();
     }
@@ -65,8 +68,10 @@ public class ListView extends VerticalLayout {
 
     private void configureForm() {
         form = new TimeForm(service.findAllProjects(), service.findAllEmployees(), service.findAllDistinctTimeEntries(), service.findAllTimeEntries());
-       form.setWidth("15em");
+      // form.setWidth("15em");
         //form.setColspan(1, );
+        form.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 5));
+
         form.getEmployeeComboBox().addValueChangeListener(event -> {
             selectedEmployee = event.getValue();
             if (selectedEmployee != null) {
@@ -116,12 +121,15 @@ public class ListView extends VerticalLayout {
     }
 
     private Component heading() {
-        HorizontalLayout topbar = new HorizontalLayout(new H1("Vaadin"));
+        HorizontalLayout topbar = new HorizontalLayout(new H1("vaadin}>"));
+        H4 text=new H4("home");
+        text.addClassName("text-on-side");
         topbar.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         topbar.setDefaultVerticalComponentAlignment(Alignment.CENTER);
         topbar.setPadding(true);
         topbar.setWidthFull();
         topbar.addClassName("topbar");
+        //topbar.add(text);
         return topbar;
     }
 
@@ -130,7 +138,7 @@ public class ListView extends VerticalLayout {
         grid.setSizeFull();
         grid.setColumns("date");
         grid.addColumn(timeentry -> String.format("%.2f hours", timeentry.getHours())).setHeader("Hours Worked");
-        grid.addColumn(timeentry -> timeentry.getProject().getDescription()).setHeader("Description");
+        grid.addColumn(TimeEntry::getDescription).setHeader("Description");
         grid.addColumn(timeentry -> timeentry.getProject().getName()).setHeader("Project");
         grid.addColumn(TimeEntry::getTimeCategory).setHeader("Time Category");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
