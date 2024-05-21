@@ -39,6 +39,10 @@ public class CrmService {
         return projectRepository.count();
     }
 
+    public long countEmployees() {
+        return employeeRepository.count();
+    }
+
     public void deleteProject(Project project) {
         projectRepository.delete(project);
     }

@@ -53,7 +53,7 @@ public class TimeForm extends FormLayout {
     ComboBox<Duration> breakDuration = new ComboBox<>("Break Duration");
 
     Button close = new Button("Close");
-    Button save = new Button("Update");
+    Button save = new Button("Save");
     Button delete = new Button("Delete");
     Button clear = new Button("Clear");
     Button createNew = new Button("Create New");
@@ -66,34 +66,28 @@ public class TimeForm extends FormLayout {
 
         binder.forField(date2)
                 .bind(TimeEntry::getDate, TimeEntry::setDate);
-//
-//        binder.forField(description)
-//                .bind(timeEntry -> timeEntry.getProject() != null ? timeEntry.getProject().getDescription() : "",
-//                        (timeEntry, desc) -> {
-//                            if (timeEntry.getProject() != null) {
-//                                timeEntry.getProject().setDescription(desc);
-//                            }
-//                        });
-//
-//
-//        binder.forField(arrivalTime)
-//                .bind(TimeEntry::getArrivalTime, TimeEntry::setArrivalTime);
-//
-//        binder.forField(departureTime)
-//                .bind(TimeEntry::getDepartureTime, TimeEntry::setDepartureTime);
-//
-//        binder.forField(breakDuration)
-//                .asRequired("Break duration is required")
-//                .bind(TimeEntry::getBreakDuration, TimeEntry::setBreakDuration);
-//        binder.bind(hours, timeEntry -> {
-//            if (timeEntry.getArrivalTime() != null && timeEntry.getDepartureTime() != null && timeEntry.getBreakDuration() != null) {
-//                long minutesWorked = Duration.between(timeEntry.getArrivalTime(), timeEntry.getDepartureTime()).minus(timeEntry.getBreakDuration()).toMinutes();
-//                double hoursWorked = minutesWorked / 60.0;
-//                hoursWorked = Math.round(hoursWorked * 100.0) / 100.0;
-//                return String.format("%.2f", hoursWorked);
-//            }
-//            return "0.00"; // Default
-//        }, null);
+
+        binder.forField(description)
+                .bind(TimeEntry::getDescription, TimeEntry::setDescription);
+
+        binder.forField(arrivalTime)
+                .bind(TimeEntry::getArrivalTime, TimeEntry::setArrivalTime);
+
+        binder.forField(departureTime)
+                .bind(TimeEntry::getDepartureTime, TimeEntry::setDepartureTime);
+
+        binder.forField(breakDuration)
+                .asRequired("Break duration is required")
+                .bind(TimeEntry::getBreakDuration, TimeEntry::setBreakDuration);
+        binder.bind(hours, timeEntry -> {
+            if (timeEntry.getArrivalTime() != null && timeEntry.getDepartureTime() != null && timeEntry.getBreakDuration() != null) {
+                long minutesWorked = Duration.between(timeEntry.getArrivalTime(), timeEntry.getDepartureTime()).minus(timeEntry.getBreakDuration()).toMinutes();
+                double hoursWorked = minutesWorked / 60.0;
+                hoursWorked = Math.round(hoursWorked * 100.0) / 100.0;
+                return String.format("%.2f", hoursWorked);
+            }
+            return "0.00"; // Default
+        }, null);
 
         employee.setItems(employees);
         employee.setItemLabelGenerator(Employee::getName);
@@ -111,13 +105,10 @@ public class TimeForm extends FormLayout {
         breakDuration.setItemLabelGenerator(duration -> String.format("%d minutes", duration.toMinutes()));
 
         VerticalLayout mainLayout = new VerticalLayout();
-        mainLayout.setPadding(false);
-        mainLayout.setMargin(false);
-        mainLayout.setSpacing(false);
         mainLayout.setWidthFull();
 
         add(createBoxlayout2(), createBoxlayout(), createButtonsLayout());
-      // setTimeEntry(new TimeEntry());
+        setTimeEntry(new TimeEntry());
     }
 
     public void clearForm(){
@@ -156,22 +147,12 @@ public class TimeForm extends FormLayout {
 
 
     private HorizontalLayout createBoxlayout2() {
-        H4 addHours = new H4("Add Hours");
-        addHours.addClassName("h4-no-margin");
         HorizontalLayout first = new HorizontalLayout();
-//       first.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
-//      first.setAlignItems(FlexComponent.Alignment.STRETCH);
        add(employee, date2, arrivalTime, breakDuration, departureTime);
        employee.setPrefixComponent(new Icon("vaadin", "user"));
        // setColspan(employee, 2);
 
         //  first.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
-
-        first.setFlexGrow(1, employee);
-        first.setFlexGrow(3, date2);
-        first.setFlexGrow(1, arrivalTime);
-        first.setFlexGrow(1, breakDuration);
-        first.setFlexGrow(1, departureTime);
         first.setWidthFull();
 
         return first;
@@ -187,11 +168,12 @@ public class TimeForm extends FormLayout {
     }
 
 
-    private HorizontalLayout createButtonsLayout() {
+    private Component createButtonsLayout() {
         HorizontalLayout buttons= new HorizontalLayout();
+        buttons.addClassName("button-layout");
         close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         clear.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        save.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
         createNew.addThemeVariants(ButtonVariant.LUMO_PRIMARY); // Styling the new button
 
@@ -203,19 +185,17 @@ public class TimeForm extends FormLayout {
         createNew.addClickListener(event -> newTimeEntry());
 
         save.addClickShortcut(Key.ENTER);
+        buttons.setPadding(true);
         binder.addStatusChangeListener(e -> save.setEnabled(binder.isValid()));
-        buttons.add(createNew, save, clear, close);
-     //   buttons.setAlignItems(FlexComponent.Alignment.);
+        buttons.add(save, clear, close);
+        buttons.getStyle().set("width", "20px");
         return buttons;
     }
 
     private void newTimeEntry() {
-        if (binder.isValid()) {
-//            TimeEntry newEntry = new TimeEntry();
-//            binder.writeBeanIfValid(newEntry);
-            fireEvent(new CreateNewEvent(this, binder.getBean()));
             setTimeEntry(new TimeEntry());
-        }
+            validateAndSave();
+
     }
 
     private void validateAndSave() {

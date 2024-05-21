@@ -10,21 +10,19 @@ vaadin-grid::part(header-cell){
 
 }
 
-.topbar {
+
+
+.header1 {
   width: 100%;
+  height:100px;
   background: linear-gradient(90deg, rgba(0, 99, 255, 0.8) 0%, rgba(150,62,255,1) 100%);
   color:white
 }
 
-.topbar h1 {
+.header1 h1 {
     margin: 0;
     color: white;
     text-align:center;
-}
-
-.topbar h4{
-text-align:right;
-color:white
 }
 
 .list-view{
@@ -48,7 +46,10 @@ color:white
      --vaadin-input-field-height:35px;
 }
 
-vaadin-button{
-padding-top:10px;
+.button-layout {
+    width: 20px;
 }
-
+a[highlight] {
+    font-weight: bold;
+    text-decoration: underline;
+}

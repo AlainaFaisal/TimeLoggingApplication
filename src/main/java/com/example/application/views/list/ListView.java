@@ -5,6 +5,7 @@ import com.example.application.data.Contact;
 import com.example.application.data.Employee;
 import com.example.application.services.CrmService;
 import com.example.application.data.TimeEntry;
+import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -24,7 +25,7 @@ import com.vaadin.flow.router.Route;
 
 import java.util.Collections;
 
-@Route(value = "")
+@Route(value = "",layout= MainLayout.class)
 @PageTitle("Time Logging Application")
 public class ListView extends VerticalLayout {
     Grid<TimeEntry> grid = new Grid<>(TimeEntry.class);
@@ -42,7 +43,7 @@ public class ListView extends VerticalLayout {
         configureGrid();
         configureForm();
         //form.setWidthFull();
-        add(heading(), getContent());
+        add(getContent());
         updateList();
     }
 
@@ -111,6 +112,18 @@ public class ListView extends VerticalLayout {
         updateListWithName(selected.getName());
         openEditor();
     }
+    public void editEntry(TimeEntry value) {
+        isEditing = true;
+        form.setTimeEntry(value);
+        form.setVisible(true);
+        addClassName("editing");
+    }
+
+    private void addEntry() {
+        grid.asSingleSelect().clear();
+        form.setVisible(true);
+        editEntry(new TimeEntry());
+    }
 
     private void updateListWithName(String employeeName) {
         grid.setItems(service.findAllProjectsforanEmployee(employeeName));
@@ -118,19 +131,6 @@ public class ListView extends VerticalLayout {
 
     private void updateList() {
         grid.setItems(service.findAllTimeEntries());
-    }
-
-    private Component heading() {
-        HorizontalLayout topbar = new HorizontalLayout(new H1("vaadin}>"));
-        H4 text=new H4("home");
-        text.addClassName("text-on-side");
-        topbar.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-        topbar.setDefaultVerticalComponentAlignment(Alignment.CENTER);
-        topbar.setPadding(true);
-        topbar.setWidthFull();
-        topbar.addClassName("topbar");
-        //topbar.add(text);
-        return topbar;
     }
 
     private void configureGrid() {
@@ -152,42 +152,4 @@ public class ListView extends VerticalLayout {
     }
 
 
-
-    private HorizontalLayout getToolbar() {
-        name.setItems(service.findAllEmployees());
-        name.setItemLabelGenerator(Employee::getName);
-        name.setPlaceholder("Select Employee");
-        name.setClearButtonVisible(true);
-
-        Button selectButton = new Button("Select");
-        selectButton.addThemeVariants(ButtonVariant.LUMO_ICON);
-        selectButton.addClickListener(event -> {
-//            selectedEmployee = name.getValue();
-//            if (selectedEmployee != null) {
-//                updateListWithName(selectedEmployee.getName());
-//            } else {
-//                Notification.show("Please select an employee from the list.", 3000, Notification.Position.MIDDLE);
-//            }
-//            addEntry();
-        });
-
-        var toolbar = new HorizontalLayout(name, selectButton);
-        toolbar.addClassName("toolbar");
-        toolbar.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.END); // Align components vertically
-        toolbar.setAlignItems(FlexComponent.Alignment.BASELINE); // Ensure the button and ComboBox align at the baseline
-
-        return toolbar;
-    }
-    public void editEntry(TimeEntry value) {
-            isEditing = true;
-            form.setTimeEntry(value);
-            form.setVisible(true);
-            addClassName("editing");
-    }
-
-    private void addEntry() {
-        grid.asSingleSelect().clear();
-        form.setVisible(true);
-        editEntry(new TimeEntry());
-    }
 }
