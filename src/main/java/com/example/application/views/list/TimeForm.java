@@ -24,6 +24,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -50,6 +51,7 @@ public class TimeForm extends FormLayout {
     TimePicker departureTime= new TimePicker("Departure");
     ComboBox<String> timeCategory = new ComboBox<>("Time Category");
     ComboBox<Duration> breakDuration = new ComboBox<>("Break Duration");
+    NumberField number= new NumberField("Add Number");
 
     Button close = new Button("Close");
     Button save = new Button("Save");
