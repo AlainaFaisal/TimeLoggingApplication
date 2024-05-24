@@ -39,7 +39,6 @@ import java.util.List;
 
 
 public class TimeForm extends FormLayout {
-    CrmService service;
     Binder<TimeEntry> binder= new BeanValidationBinder<>(TimeEntry.class);
 
     ComboBox<Employee> employee = new ComboBox<>("Employee");
@@ -93,7 +92,6 @@ public class TimeForm extends FormLayout {
         employee.setItemLabelGenerator(Employee::getName);
         project.setItems(projects);
         project.setItemLabelGenerator(Project::getName);
-        //employee.addValueChangeListener(this::handleEmployeeSelectionChange);
         timeCategory.setItems(timeCategories);
         employee.addClassName("employee-combobox");
         arrivalTime.addClassName("arrival-field"); // Apply the custom CSS class to TextField

@@ -14,4 +14,7 @@ public interface TimeEntryRepository extends JpaRepository<TimeEntry, Long> {
 
     @Query("SELECT DISTINCT a.timeCategory FROM TimeEntry a")
     List<String> findDistinctTime();
+
+    // Add this method to find TimeEntries by Employee
+    List<TimeEntry> findByEmployee(Employee employee);
 }

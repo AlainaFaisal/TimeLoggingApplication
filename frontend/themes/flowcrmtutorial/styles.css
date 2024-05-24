@@ -6,17 +6,13 @@ vaadin-grid::part(header-cell){
  --vaadin-grid-cell-background: #bfc2c7;
   color:black;
   font-size:16px;
-
-
 }
 
-
-
-.header1 {
+vaadin-horizontal-layout.header1 {
   width: 100%;
   height:100px;
   background: linear-gradient(90deg, rgba(0, 99, 255, 0.8) 0%, rgba(150,62,255,1) 100%);
-  color:white
+  color: red
 }
 
 .header1 h1 {
@@ -52,4 +48,12 @@ vaadin-grid::part(header-cell){
 a[highlight] {
     font-weight: bold;
     text-decoration: underline;
+}
+
+.header1 {
+    padding: 10px;
+}
+
+.horizontal-layout {
+    margin: 0 10px;
 }

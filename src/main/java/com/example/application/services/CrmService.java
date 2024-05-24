@@ -47,6 +47,11 @@ public class CrmService {
         projectRepository.delete(project);
     }
 
+    public List<TimeEntry> findAllTimeEntriesByEmployee(Employee employee) {
+        // Implement the logic to fetch time entries for the given employee
+        // This might involve querying the database with a filter on employee ID
+        return timeRepository.findByEmployee(employee);
+    }
     public void saveProject(Project project) {
         if (project == null) {
             System.err.println("Contact is null. Are you sure you have connected your form to the application?");

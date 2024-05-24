@@ -24,7 +24,7 @@ public class Company extends AbstractEntity {
         this.name = name;
     }
 
-  //  public List<Contact> getEmployees() {
+  //  public List<Employee> getEmployees() {
    //     return employees;
   //  }
 

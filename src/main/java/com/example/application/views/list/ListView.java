@@ -69,8 +69,7 @@ public class ListView extends VerticalLayout {
 
     private void configureForm() {
         form = new TimeForm(service.findAllProjects(), service.findAllEmployees(), service.findAllDistinctTimeEntries(), service.findAllTimeEntries());
-      // form.setWidth("15em");
-        //form.setColspan(1, );
+        //form.setWidth("15em");
         form.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 5));
 
         form.getEmployeeComboBox().addValueChangeListener(event -> {
